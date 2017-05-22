@@ -2,7 +2,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
-
 import { AppComponent } from './app.component';
 import { UserSelectionComponent } from './user-selection/user-selection.component';
 import { ThreadSectionComponent } from './thread-section/thread-section.component';
@@ -25,6 +24,7 @@ function storeReducer(state:ApplicationState,action:Action):ApplicationState
       return state;
   }
 }
+
 function handleLoadUserThreadsAction(state:ApplicationState,action:LoadUserThreadAction) : ApplicationState {
   const userData = action.payload;
   const newState: ApplicationState = Object.assign({},state);
@@ -35,6 +35,7 @@ function handleLoadUserThreadsAction(state:ApplicationState,action:LoadUserThrea
   };
   return newState;
 }
+
 @NgModule({
   declarations: [
     AppComponent,

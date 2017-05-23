@@ -15,7 +15,7 @@ import {LOAD_USER_THREADS_ACTION, LoadUserThreadAction} from "./store/actions";
 import * as _ from 'lodash';
 
 
-function storeReducer(state:ApplicationState,action:Action):ApplicationState
+export function storeReducer(state:ApplicationState,action:Action):ApplicationState
 {
   switch(action.type) {
     case LOAD_USER_THREADS_ACTION :

@@ -4,8 +4,9 @@ import {Store} from "@ngrx/store";
 import {ApplicationState} from "../store/application-state";
 import {LoadUserThreadAction} from "../store/actions";
 import {Observable} from "rxjs/Observable";
-import * as _ from 'lodash';
 import {Thread} from "../../../shared/model/thread";
+import {ThreadSummaryVM} from "./thread-summary.vm";
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-thread-section',
@@ -14,8 +15,12 @@ import {Thread} from "../../../shared/model/thread";
 
 })
 export class ThreadSectionComponent implements OnInit {
+  mapUnreadMessagesCounter: any;
+  mapStateToUserName: any;
   userName$:Observable<string>;
   unreadMessage$:Observable<number>;
+  threadSummary$:Observable<ThreadSummaryVM[]>;
+
   constructor(private threadService:ThreadsService,
                 private store:Store<ApplicationState>) {
     this.userName$=store
@@ -24,17 +29,19 @@ export class ThreadSectionComponent implements OnInit {
     this.unreadMessage$=store
       .skip(1)
       .map(this.mapUnreadMessagesCounter);
+
+    this.threadSummary$ = store.select( state => {
+      const threads = _.values<Thread>(state.storeData.threads);
+      return threads.map(thrd => {
+        return {
+          participantNames : null,
+          id: thrd.id,
+          lastMessageText:null,
+        }
+      });
+    })
   }
-  mapStateToUserName(state:ApplicationState):string {
-    return  state.storeData.participants[state.uiState.userId].name;
-  }
-  mapUnreadMessagesCounter(state:ApplicationState):number {
-    const currentUserId = state.uiState.userId;
-    return _.values<Thread>(state.storeData.threads)
-      .reduce((acc,thread) =>
-        acc+ thread.participants[currentUserId]
-      ,0);
-  }
+
   ngOnInit() {
     this.threadService.loadUserThreads().subscribe(allUserData => {
       this.store.dispatch(new LoadUserThreadAction(allUserData));
